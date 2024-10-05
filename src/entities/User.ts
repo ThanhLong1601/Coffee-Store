@@ -13,7 +13,7 @@ export class User {
   @Matches(/^[A-Za-z\s]+$/, {message: 'Name không được chứa số'})
   name!: string;
 
-  @Column({unique: true})
+  @Column()
   @IsNotEmpty({message: 'Phone không được để trống'})
   @Matches(/^\+?\d{10,15}$/, { message: 'Phone phải bắt đầu bằng dấu + (nếu có) và có từ 10 đến 15 số' })
   phone!: string;

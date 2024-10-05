@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-export const AppDataSource = new DataSource({
+const AppDataSource = new DataSource({
   type: 'mysql',
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
@@ -16,3 +16,5 @@ export const AppDataSource = new DataSource({
   migrations: ["src/migrations/**/*.ts"],
   synchronize: false,
 });
+
+export default AppDataSource;

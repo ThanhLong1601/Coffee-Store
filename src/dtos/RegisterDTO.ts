@@ -16,7 +16,7 @@ export class RegisterDTO {
   name!: string;
 
   @IsNotEmpty({ message: 'Phone không được để trống' })
-  @Matches(/^\d{11}$/, { message: 'Phone phải gồm đúng 11 chữ số' })
+  @Matches(/^\+?\d{10,15}$/, { message: 'Phone phải bắt đầu bằng dấu + (nếu có) và có từ 10 đến 15 số' })
   phone!: string;
 
   @IsNotEmpty({ message: 'Email không được để trống' })
