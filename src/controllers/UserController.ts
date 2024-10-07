@@ -72,7 +72,7 @@ export class UserController {
           const token = jwt.sign(
               { userId: user.id, email: user.email },
               process.env.JWT_SECRET!,
-              { expiresIn: '1h' }
+              { expiresIn: '1h' } // Phần này nên làm thế nào mới an toàn ???
           );
 
           res.status(200).json({ message: 'Đăng nhập thành công!', token, user: user.name });
@@ -139,17 +139,14 @@ export class UserController {
         return;
       }
 
-      if (otpRecord.attempts >= 3) {
-        res.status(400).json({ message: 'Bạn đã nhập sai OTP quá 3 lần.' });
-        return;
-      }
-
       if (otpRecord.otp_code !== otp) {
         otpRecord.attempts += 1;
         await otpRepository.save(otpRecord);
 
         if (otpRecord.attempts >= 3) {
-          res.status(400).json({ message: 'Bạn đã nhập sai OTP quá 3 lần.' });
+
+          await otpRepository.delete(otpRecord.id);
+          res.status(400).json({ message: 'Bạn đã nhập sai OTP quá 3 lần. Mã OTP đã bị hủy' });
         } else {
           res.status(400).json({ message: 'OTP không chính xác. Thử lại.' });
         }
