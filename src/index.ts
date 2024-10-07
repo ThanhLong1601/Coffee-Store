@@ -4,6 +4,7 @@ import AppDataSource from './data-source';
 import router from './routes/UserRoutes';
 import dotenv from 'dotenv';
 import { setupSwagger } from './configs/swagger';
+import { seedStores } from './seeds/storeSeed';
 
 dotenv.config();
 
@@ -15,8 +16,11 @@ setupSwagger(app);
 app.use('/api/users', router);
 
 AppDataSource.initialize()
-    .then(() => {
+    .then(async () => {
         console.log('Kết nối cơ sở dữ liệu thành công!');
+
+        await seedStores();
+
         const PORT = process.env.PORT || 3000;
         app.listen(PORT, () => {
             console.log(`Server đang chạy trên cổng ${PORT}`);

@@ -12,7 +12,8 @@
     "migration:generate": "npm run typeorm migration:generate -- -d ./src/data-source.ts",
     "migration:show": "npm run typeorm migration:show -- -d ./src/data-source.ts",
     "migration:revert": "npm run typeorm migration:revert -- -d ./src/data-source.ts",
-    "migration:create": "npm run typeorm migration:create"
+    "migration:create": "npm run typeorm migration:create",
+    "seed:stores": "ts-node src/seeds/storeSeed.ts"
   },
   "keywords": [],
   "author": "",
