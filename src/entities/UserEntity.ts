@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
-import { IsNotEmpty, IsEmail, Length, Matches, MaxLength, IsString } from "class-validator";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Otp } from "./OtpEntity";
 
 @Entity()
 export class User {
@@ -17,4 +17,7 @@ export class User {
 
   @Column({unique: true})
   password!: string;
+
+  @OneToMany(() => Otp, otp => otp.user)
+  otps!: Otp[]
 }
