@@ -10,8 +10,7 @@ import { ForgotPasswordDTO } from '../dtos/ForgotPasswordDTO';
 import { sendOtpEmail } from '../services/emailService';
 import { ResetPasswordDTO } from '../dtos/ResetPasswordDTO';
 import { VerifyOtpDTO } from '../dtos/VerifyOtpDTO';
-
-let currentEmail: string | null = null;
+import { AuthRequest } from '../middlewares/authMiddleware';
 
 export class UserController {
   
@@ -104,7 +103,6 @@ export class UserController {
 
       await otpRepository.save(otp);
 
-      
       await sendOtpEmail(email, otpCode);
 
       res.status(200).json({ message: 'Mã OTP đã được gửi về email của bạn.' });
@@ -156,25 +154,29 @@ export class UserController {
       otpRecord.Isused = true;
       await otpRepository.save(otpRecord);
 
-      currentEmail = otpRecord.user.email;
+      const resetToken = jwt.sign(
+        {userId: otpRecord.user.id, email: otpRecord.user.email, otpId: otpRecord.id},
+        process.env.JWT_SECRET!,
+        {expiresIn: '5m'}
+      );
 
-      res.status(200).json({ message: 'OTP đã được xác thực thành công.' });
+      res.status(200).json({ message: 'OTP đã được xác thực thành công.', resetToken });
     } catch (error) {
       console.error(error);
     }
   }
 
-  static async resetPassword(req: Request, res: Response): Promise<void> {
+  static async resetPassword(req: AuthRequest, res: Response): Promise<void> {
     const userRepository = AppDataSource.getRepository(User);
     const { newPassword, confirmPassword } = req.body as ResetPasswordDTO;
 
-    if (!currentEmail) {
-      res.status(400).json({ message: 'Không có email để đặt lại mật khẩu. Vui lòng xác thực OTP trước.' });
+    if (!req.user || !req.user.email) {
+      res.status(400).json({ message: 'Không có thông tin người dùng để đặt lại mật khẩu. Vui lòng xác thực OTP trước.' });
       return;
     }
 
     try {
-      const user = await userRepository.findOne({ where: { email: currentEmail } });
+      const user = await userRepository.findOne({ where: { email: req.user.email } });
       if (!user) {
         res.status(404).json({ message: 'Không tìm thấy người dùng với email này.' });
         return;
@@ -195,7 +197,6 @@ export class UserController {
       
       res.status(200).json({ message: 'Mật khẩu đã được cập nhật thành công.' });
       
-      currentEmail = null;
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Lỗi máy chủ.' });

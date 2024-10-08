@@ -6,6 +6,7 @@ import { LoginDTO } from '../dtos/LoginDTO';
 import { ForgotPasswordDTO } from '../dtos/ForgotPasswordDTO';
 import { VerifyOtpDTO } from '../dtos/VerifyOtpDTO';
 import { ResetPasswordDTO } from '../dtos/ResetPasswordDTO';
+import { authenticateJWT } from '../middlewares/authMiddleware';
 
 const router = Router();
 
@@ -84,7 +85,10 @@ router.post('/login', validationMiddleware(LoginDTO), UserController.login);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/ForgotPasswordDTO'
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
  *     responses:
  *       200:
  *         description: OTP đã được gửi về email
@@ -101,14 +105,15 @@ router.post('/forgot-password', validationMiddleware(ForgotPasswordDTO), UserCon
  *   post:
  *     summary: Verify OTP
  *     tags: [Users]
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/VerifyOtpDTO'
+ *          schema:
+ *             type: object
+ *             properties:
+ *               otp:
+ *                 type: string
  *     responses:
  *       200:
  *         description: OTP đã được xác thực thành công
@@ -134,7 +139,12 @@ router.post('/verify-otp', validationMiddleware(VerifyOtpDTO), UserController.ve
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/ResetPasswordDTO'
+ *             type: object
+ *             properties:
+ *               newPassword:
+ *                 type: string
+ *               confirmPassword:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Mật khẩu đã được cập nhật
@@ -147,6 +157,6 @@ router.post('/verify-otp', validationMiddleware(VerifyOtpDTO), UserController.ve
  *       500:
  *         description: Lỗi máy chủ
  */
-router.post('/reset-password', validationMiddleware(ResetPasswordDTO), UserController.resetPassword);
+router.post('/reset-password', authenticateJWT , validationMiddleware(ResetPasswordDTO), UserController.resetPassword);
 
 export default router;

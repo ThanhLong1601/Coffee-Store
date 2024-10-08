@@ -22,54 +22,7 @@ const swaggerOptions = {
                   bearerFormat: 'JWT',
               },
           },
-          schemas: {
-              RegisterDTO: {
-                  type: 'object',
-                  properties: {
-                      name: { type: 'string' },
-                      phone: { type: 'string' },
-                      email: { type: 'string' },
-                      password: { type: 'string' },
-                  },
-                  required: ['name', 'phone', 'email', 'password'],
-              },
-              LoginDTO: {
-                  type: 'object',
-                  properties: {
-                      email: { type: 'string' },
-                      password: { type: 'string' },
-                  },
-                  required: ['email', 'password'],
-              },
-              ForgotPasswordDTO: {
-                  type: 'object',
-                  properties: {
-                      email: { type: 'string' },
-                  },
-                  required: ['email'],
-              },
-              VerifyOtpDTO: {
-                  type: 'object',
-                  properties: {
-                      otp: { type: 'string' },
-                  },
-                  required: ['otp'],
-              },
-              ResetPasswordDTO: {
-                  type: 'object',
-                  properties: {
-                      newPassword: { type: 'string' },
-                      confirmPassword: { type: 'string' },
-                  },
-                  required: ['newPassword', 'confirmPassword'],
-              },
-          },
       },
-      security: [
-          {
-              bearerAuth: [],
-          },
-      ],
   },
   apis: ['./src/routes/*.ts'],
 };
