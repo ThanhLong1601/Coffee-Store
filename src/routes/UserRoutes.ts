@@ -105,6 +105,8 @@ router.post('/forgot-password', validationMiddleware(ForgotPasswordDTO), UserCon
  *   post:
  *     summary: Verify OTP
  *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -124,7 +126,7 @@ router.post('/forgot-password', validationMiddleware(ForgotPasswordDTO), UserCon
  *       500:
  *         description: Lỗi máy chủ
  */
-router.post('/verify-otp', validationMiddleware(VerifyOtpDTO), UserController.verifyOtp);
+router.post('/verify-otp',authenticateJWT, validationMiddleware(VerifyOtpDTO), UserController.verifyOtp);
 
 /**
  * @swagger

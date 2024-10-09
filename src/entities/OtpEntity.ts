@@ -19,7 +19,7 @@ export class Otp {
   attempts!: number;
 
   @Column({default: false})
-  Isused!: boolean;
+  isUsed!: boolean;
 
   @ManyToOne(() => User, user => user.otps, {onDelete: 'CASCADE'})
   user!: User;

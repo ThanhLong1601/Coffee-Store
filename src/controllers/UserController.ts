@@ -87,7 +87,7 @@ export class UserController {
     const { email } = req.body as ForgotPasswordDTO;
 
     try {
-      const user = await userRepository.findOne({ where: { email } });
+      const user = await userRepository.findOne({ where: { email: email } });
       if (!user) {
         res.status(404).json({ message: 'Không tìm thấy người dùng với email này.' });
         return;
@@ -99,35 +99,49 @@ export class UserController {
         otp_code: otpCode,
         user: user,
         expires_at: new Date(Date.now() + 5 * 60 * 1000), 
+        attempts: 0,
+        isUsed: false
       });
 
       await otpRepository.save(otp);
 
       await sendOtpEmail(email, otpCode);
 
-      res.status(200).json({ message: 'Mã OTP đã được gửi về email của bạn.' });
+      const resetToken = jwt.sign(
+        {userId: user.id},
+        process.env.JWT_SECRET!,
+        {expiresIn: '5m'}
+      );
+
+      res.status(200).json({ message: 'Mã OTP đã được gửi về email của bạn.', resetToken });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Lỗi máy chủ.' });
     }
   }
 
-  static async verifyOtp(req: Request, res: Response): Promise<void> {
+  static async verifyOtp(req: AuthRequest, res: Response): Promise<void> {
     const otpRepository = AppDataSource.getRepository(Otp);
     const { otp } = req.body as VerifyOtpDTO;
+    const userId = req.user?.id;
+
+    if (!userId) {
+      res.status(401).json({ message: 'Không tìm thấy user để xác thực.' });
+      return;
+  }
 
     try {
       const otpRecord = await otpRepository.findOne({
         where: {
-          otp_code: otp,
-          Isused: false,
+          user: {id: userId},
+          isUsed: false,
         },
         relations: ['user'],
         order: { created_at: 'DESC' },
       });
 
       if (!otpRecord) {
-        res.status(400).json({ message: 'OTP không hợp lệ.' });
+        res.status(400).json({ message: 'OTP không hợp lệ hoặc đã được sử dụng.' });
         return;
       }
 
@@ -151,7 +165,7 @@ export class UserController {
         return;
       }
 
-      otpRecord.Isused = true;
+      otpRecord.isUsed = true;
       await otpRepository.save(otpRecord);
 
       const resetToken = jwt.sign(
@@ -163,6 +177,7 @@ export class UserController {
       res.status(200).json({ message: 'OTP đã được xác thực thành công.', resetToken });
     } catch (error) {
       console.error(error);
+      res.status(500).json({message: 'Lỗi máy chủ.'});
     }
   }
 
@@ -170,13 +185,13 @@ export class UserController {
     const userRepository = AppDataSource.getRepository(User);
     const { newPassword, confirmPassword } = req.body as ResetPasswordDTO;
 
-    if (!req.user || !req.user.email) {
+    if (!req.user || !req.user.id) {
       res.status(400).json({ message: 'Không có thông tin người dùng để đặt lại mật khẩu. Vui lòng xác thực OTP trước.' });
       return;
     }
 
     try {
-      const user = await userRepository.findOne({ where: { email: req.user.email } });
+      const user = await userRepository.findOne({ where: { id: req.user.id } });
       if (!user) {
         res.status(404).json({ message: 'Không tìm thấy người dùng với email này.' });
         return;

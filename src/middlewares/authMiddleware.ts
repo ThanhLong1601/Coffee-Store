@@ -4,7 +4,9 @@ import AppDataSource from '../data-source';
 import { Otp } from '../entities/OtpEntity';
 
 export interface AuthRequest extends Request {
-    user?: any;
+    user?: {
+        id: number;
+    };
     token?: string;
 }
 
@@ -17,17 +19,14 @@ export const authenticateJWT = async (req: AuthRequest, res: Response, next: Nex
 
         try {
             const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
-            const otpId = decoded.otpId;
+            const userId = decoded.userId;
 
-            const otpRepository = AppDataSource.getRepository(Otp);
-            const otpRecord = await otpRepository.findOne({ where: { id: otpId, Isused: true } });
-
-            if (!otpRecord) {
-                res.status(403).json({ message: 'Token không hợp lệ hoặc OTP chưa được xác thực.' });
+            if (!userId) {
+                res.status(403).json({ message: 'Token không hợp lệ.' });
                 return;
             }
 
-            req.user = decoded;
+            req.user = { id: userId };
             next();
         } catch (err) {
             console.error(err);
