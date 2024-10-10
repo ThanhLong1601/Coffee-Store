@@ -8,7 +8,7 @@ import { VerifyOtpDTO } from '../dtos/VerifyOtpDTO';
 import { ResetPasswordDTO } from '../dtos/ResetPasswordDTO';
 import { authenticateJWT } from '../middlewares/authMiddleware';
 
-const router = Router();
+const userRouter = Router();
 
 /**
  * @swagger
@@ -46,7 +46,7 @@ const router = Router();
  *       500:
  *         description: Lỗi máy chủ
  */
-router.post('/register', validationMiddleware(RegisterDTO), UserController.register);
+userRouter.post('/register', validationMiddleware(RegisterDTO), UserController.register);
 
 /**
  * @swagger
@@ -73,7 +73,7 @@ router.post('/register', validationMiddleware(RegisterDTO), UserController.regis
  *       500:
  *         description: Lỗi máy chủ
  */
-router.post('/login', validationMiddleware(LoginDTO), UserController.login);
+userRouter.post('/login', validationMiddleware(LoginDTO), UserController.login);
 /**
  * @swagger
  * /users/forgot-password:
@@ -97,7 +97,7 @@ router.post('/login', validationMiddleware(LoginDTO), UserController.login);
  *       500:
  *         description: Lỗi máy chủ
  */
-router.post('/forgot-password', validationMiddleware(ForgotPasswordDTO), UserController.forgotPassword);
+userRouter.post('/forgot-password', validationMiddleware(ForgotPasswordDTO), UserController.forgotPassword);
 
 /**
  * @swagger
@@ -126,7 +126,7 @@ router.post('/forgot-password', validationMiddleware(ForgotPasswordDTO), UserCon
  *       500:
  *         description: Lỗi máy chủ
  */
-router.post('/verify-otp',authenticateJWT, validationMiddleware(VerifyOtpDTO), UserController.verifyOtp);
+userRouter.post('/verify-otp',authenticateJWT, validationMiddleware(VerifyOtpDTO), UserController.verifyOtp);
 
 /**
  * @swagger
@@ -159,6 +159,6 @@ router.post('/verify-otp',authenticateJWT, validationMiddleware(VerifyOtpDTO), U
  *       500:
  *         description: Lỗi máy chủ
  */
-router.post('/reset-password', authenticateJWT , validationMiddleware(ResetPasswordDTO), UserController.resetPassword);
+userRouter.post('/reset-password', authenticateJWT , validationMiddleware(ResetPasswordDTO), UserController.resetPassword);
 
-export default router;
+export default userRouter;

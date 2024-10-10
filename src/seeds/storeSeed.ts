@@ -1,8 +1,8 @@
 import AppDataSource from '../data-source';
-import { store } from '../entities/StoreEntity';
+import { Store } from '../entities/StoreEntity';
 
 export async function seedStores() {
-  const storeRepository = AppDataSource.getRepository(store)
+  const storeRepository = AppDataSource.getRepository(Store)
 
   const stores = [
     { name: 'Highlands Coffee LD', location: '2B Đ. Lê Duẩn, Quận 1' },
