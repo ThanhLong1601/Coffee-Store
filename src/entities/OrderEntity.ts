@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from "typeorm";
 import { OrderItem } from "./OrderItemEntity";
+import { User } from "./UserEntity";
 
 @Entity()
 export class Order {
@@ -23,6 +24,9 @@ export class Order {
 
   @Column({default: false})
   time_prepare!: boolean;
+
+  @ManyToOne(() => User, user => user.orders)
+  user!: User;
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
   orderItems!: OrderItem[];

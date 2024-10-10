@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { Otp } from "./OtpEntity";
+import { Order } from "./OrderEntity";
 
 @Entity()
 export class User {
@@ -20,4 +21,7 @@ export class User {
 
   @OneToMany(() => Otp, otp => otp.user)
   otps!: Otp[]
+
+  @OneToMany(() => Order, order => order.user)
+  orders!: Order[];
 }
