@@ -19,5 +19,5 @@ export async function seedStores() {
 
   await storeRepository.save(stores);
 
-  console.log('Seed data for stores has been added');
+  console.log('Seed đã được chèn vào CSDL');
 }
