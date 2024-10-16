@@ -6,7 +6,12 @@
 ## Install the dependencies:
 - npm install
 
-## Create a .env file in the root directory of the project and add the configuration information like .env.example file:
+## Setup file .env :
+
+- Create a .env file in the root directory of the project and add the configuration information like .env.example file
+
+## Create folder dist :
+- Create dist folder in the root directory of the project to store .js files
 
 ## Running the Project
 
@@ -19,7 +24,7 @@
 - npm start
 
 
-==== To create sample data for the stores, run the following command:
+==== To create sample data for the stores or products, run the following command:
 
 - npm run seed:stores
 - npm run seed:products
