@@ -1,26 +1,26 @@
-import { Entity, PrimaryGeneratedColumn, Column, Timestamp, Index, CreateDateColumn, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from "typeorm";
 import { User } from "./UserEntity";
 
-@Entity()
+@Entity('otps')
 export class Otp {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id: number;
 
   @Column()
-  otp_code!: string;
+  otp_code: string;
 
   @CreateDateColumn({type: 'timestamp'})
-  created_at!: Date;
+  created_at: Date;
 
   @Column({type: 'timestamp'})
-  expires_at!: Date;
+  expires_at: Date;
 
   @Column({default: 0})
-  attempts!: number;
+  attempts: number;
 
   @Column({default: false})
-  isUsed!: boolean;
+  isUsed: boolean;
 
   @ManyToOne(() => User, user => user.otps, {onDelete: 'CASCADE'})
-  user!: User;
+  user: User;
 }

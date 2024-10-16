@@ -8,7 +8,7 @@ tags:
     description: Stores management
 
 paths:
-  /stores/getAllStores:
+  /stores:
     get:
       summary: Get all stores
       tags:

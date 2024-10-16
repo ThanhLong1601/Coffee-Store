@@ -1,8 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { Otp } from "./OtpEntity";
 import { Order } from "./OrderEntity";
 
-@Entity()
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -10,13 +10,13 @@ export class User {
   @Column()
   name: string;
 
-  @Column()
+  @Column({unique: true})
   phone: string;
 
   @Column({unique: true})
   email: string; 
 
-  @Column({unique: true})
+  @Column()
   password: string;
 
   @OneToMany(() => Otp, otp => otp.user)
@@ -24,4 +24,11 @@ export class User {
 
   @OneToMany(() => Order, order => order.user)
   orders: Order[];
+
+  @CreateDateColumn({type: 'timestamp'})
+  created_at: Date;
+
+  @UpdateDateColumn({type: 'timestamp'})
+  updated_at: Date;
+
 }

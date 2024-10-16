@@ -7,6 +7,7 @@ import { setupSwagger } from './configs/swagger';
 import { seedStores } from './seeds/storeSeed';
 import storeRouter from './routes/StoreRoutes';
 import { env } from 'process';
+import { seedProducts } from './seeds/productSeed';
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use('/api/stores', storeRouter);
 AppDataSource.initialize()
     .then(async () => {
         await seedStores();
+        await seedProducts();
 
         app.listen(app.get('port'), () => {
             console.info(`

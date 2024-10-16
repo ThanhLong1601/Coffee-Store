@@ -5,9 +5,9 @@ export async function seedStores() {
   const storeRepository = AppDataSource.getRepository(Store)
 
   const stores = [
-    { name: 'Highlands Coffee LD', location: '2B Đ. Lê Duẩn, Quận 1' },
-    { name: 'Highlands Coffee BVD', location: '182 Đ. Bến Vân Đồn, Quận 4'},
-    { name: 'Highlands Coffee NVT', location: '88 Đ. Nguyễn Văn Trỗi, Quận Phú Nhuận'},
+    { name: 'Highlands Coffee LD', location: { latitude: 102.021214, longitude: 152.56854 } },
+    { name: 'Highlands Coffee BVD', location: { latitude: 102.021614, longitude: 152.57854 }},
+    { name: 'Highlands Coffee NVT', location: { latitude: 102.028214, longitude: 152.54854 }},
   ];
 
   const existingStores = await storeRepository.find();

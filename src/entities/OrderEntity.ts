@@ -1,33 +1,34 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { OrderItem } from "./OrderItemEntity";
 import { User } from "./UserEntity";
+import { Store } from "./StoreEntity";
 
-@Entity()
+@Entity('orders')
 export class Order {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({default: 1})
-  quantity: number;
-  
-  @Column()
-  ristretto: number;
-
-  @Column({default: false})
-  use_to: boolean;
-
-  @Column()
-  size: number;
-
-  @Column()
-  total_amount: number;
-
-  @Column({default: false})
-  time_prepare: boolean;
-
   @ManyToOne(() => User, user => user.orders)
   user: User;
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
+  @ManyToOne(() => Store, store => store.orders)
+  store: Store;
+
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, {cascade: true})
   orderItems: OrderItem[];
+
+  @Column()
+  shipping_address: string
+
+  @Column({type: 'decimal', precision: 5, scale: 2, default: 0})
+  discount: number; // Trường này lưu theo phần trăm từ 0.00% đến 100.00%
+
+  @Column({type: 'int'})
+  total_price: number;  // Dữ liệu tiền dollar nên trường này lưu theo cents để chuyển sang dollar
+
+  @CreateDateColumn({ type: 'timestamp' })
+  created_at: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updated_at: Date;
 }

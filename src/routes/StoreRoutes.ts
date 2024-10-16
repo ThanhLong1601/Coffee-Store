@@ -5,6 +5,6 @@ import { authenticateJWT } from '../middlewares/authMiddleware';
 
 const storeRouter = Router();
 
-storeRouter.get('/getAllStores',authenticateJWT, StoreController.getAllStores);
+storeRouter.get('',authenticateJWT, StoreController.getAllStores);
 
 export default storeRouter;

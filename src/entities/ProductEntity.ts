@@ -1,21 +1,26 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { OrderItem } from "./OrderItemEntity";
 
-@Entity()
+@Entity('products')
 export class Product {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id: number;
 
   @Column()
-  image!: string;
+  image: string;
   
   @Column()
-  product_name!: string;
+  name: string;
 
-  @Column()
-  price!: number;
+  @Column({type: 'int'})
+  price: number;
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.product)
-  orderItems!: OrderItem[];
+  orderItems: OrderItem[];
 
+  @CreateDateColumn({ type: 'timestamp' })
+  created_at: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updated_at: Date;
 }

@@ -5,12 +5,12 @@ export async function seedProducts() {
   const productRepository = AppDataSource.getRepository(Product);
 
   const products = [
-    { image: 'https://example.com/image1.jpg', product_name: 'Americano', price: 3.00 },
-    { image: 'https://example.com/image2.jpg', product_name: 'Cappuccino', price: 2.50 },
-    { image: 'https://example.com/image3.jpg', product_name: 'Latte', price: 2.50 },
-    { image: 'https://example.com/image1.jpg', product_name: 'Flat White', price: 3.00 },
-    { image: 'https://example.com/image2.jpg', product_name: 'Raf', price: 3.00 },
-    { image: 'https://example.com/image3.jpg', product_name: 'Espresso', price: 2.50 },
+    { image: 'https://example.com/image1.jpg', name: 'Americano', price: 300 },
+    { image: 'https://example.com/image2.jpg', name: 'Cappuccino', price: 500 },
+    { image: 'https://example.com/image3.jpg', name: 'Latte', price: 250 },
+    { image: 'https://example.com/image1.jpg', name: 'Flat White', price: 300 },
+    { image: 'https://example.com/image2.jpg', name: 'Raf', price: 300 },
+    { image: 'https://example.com/image3.jpg', name: 'Espresso', price: 250 },
   ];
 
   const existingProducts = await productRepository.find();
