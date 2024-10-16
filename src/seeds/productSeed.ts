@@ -16,11 +16,11 @@ export async function seedProducts() {
   const existingProducts = await productRepository.find();
 
   if (existingProducts.length > 0) {
-    console.log('Bảng product đã có dữ liệu, không cần thêm.');
+    console.log('Product table already has data, no need to add more.');
     return;
   }
 
   await productRepository.save(products);
 
-  console.log('Seed đã được chèn vào CSDL');
+  console.log('Seed has been inserted into the database');
 }

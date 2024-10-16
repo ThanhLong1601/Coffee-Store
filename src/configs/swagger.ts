@@ -1,3 +1,4 @@
+import { env } from 'process';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
@@ -11,7 +12,7 @@ const swaggerOptions = {
       },
       servers: [
         {
-          url: 'http://localhost:3000/api',
+          url: `http://localhost:${env.APP_PORT}/api`,
         },
       ],
       components: {
@@ -24,7 +25,7 @@ const swaggerOptions = {
           },
       },
   },
-  apis: ['./src/routes/*.ts'],
+  apis: ['./src/swagger/*.yaml'],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);

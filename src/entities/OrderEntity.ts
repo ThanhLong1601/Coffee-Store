@@ -5,29 +5,29 @@ import { User } from "./UserEntity";
 @Entity()
 export class Order {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id: number;
 
   @Column({default: 1})
-  quantity!: number;
+  quantity: number;
   
   @Column()
-  ristretto!: number;
+  ristretto: number;
 
   @Column({default: false})
-  use_to!: boolean;
+  use_to: boolean;
 
   @Column()
-  size!: number;
+  size: number;
 
   @Column()
-  total_amount!: number;
+  total_amount: number;
 
   @Column({default: false})
-  time_prepare!: boolean;
+  time_prepare: boolean;
 
   @ManyToOne(() => User, user => user.orders)
-  user!: User;
+  user: User;
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
-  orderItems!: OrderItem[];
+  orderItems: OrderItem[];
 }

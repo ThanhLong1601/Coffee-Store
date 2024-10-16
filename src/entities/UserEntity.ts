@@ -5,23 +5,23 @@ import { Order } from "./OrderEntity";
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id: number;
 
   @Column()
-  name!: string;
+  name: string;
 
   @Column()
-  phone!: string;
+  phone: string;
 
   @Column({unique: true})
-  email!: string; 
+  email: string; 
 
   @Column({unique: true})
-  password!: string;
+  password: string;
 
   @OneToMany(() => Otp, otp => otp.user)
-  otps!: Otp[]
+  otps: Otp[]
 
   @OneToMany(() => Order, order => order.user)
-  orders!: Order[];
+  orders: Order[];
 }

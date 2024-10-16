@@ -13,11 +13,11 @@ export async function seedStores() {
   const existingStores = await storeRepository.find();
 
   if (existingStores.length > 0) {
-    console.log('Bảng store đã có dữ liệu, không cần thêm.');
+    console.log('Store table already has data, no need to add more.');
     return;
   }
 
   await storeRepository.save(stores);
 
-  console.log('Seed đã được chèn vào CSDL');
+  console.log('Seed has been inserted into the database');
 }

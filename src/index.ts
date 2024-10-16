@@ -6,11 +6,21 @@ import dotenv from 'dotenv';
 import { setupSwagger } from './configs/swagger';
 import { seedStores } from './seeds/storeSeed';
 import storeRouter from './routes/StoreRoutes';
+import { env } from 'process';
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
+
+app.set('name', env.APP_NAME);
+app.set('version', env.APP_VERSION);
+app.set('port', env.APP_PORT);
+app.set('env', env.APP_ENV);
+app.set('host', env.APP_HOST);
+app.set('db_name', env.DB_NAME);
+
+
 
 setupSwagger(app);
 
@@ -19,15 +29,22 @@ app.use('/api/stores', storeRouter);
 
 AppDataSource.initialize()
     .then(async () => {
-        console.log('Kết nối cơ sở dữ liệu thành công!');
-
         await seedStores();
 
-        const PORT = process.env.PORT || 3000;
-        app.listen(PORT, () => {
-            console.log(`Server đang chạy trên cổng ${PORT}`);
+        app.listen(app.get('port'), () => {
+            console.info(`
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+- Name: ${app.get('name')}
+- Version: ${app.get('version')}
+- Environment: ${app.get('env')} 
+- Host: ${app.get('host')}/api
+- APIs Docs: ${app.get('host')}/swagger
+- Database (MySQL): ${app.get('db_name')}
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+            `);
         });
     })
     .catch((error) => {
-        console.error('Không thể kết nối cơ sở dữ liệu:', error);
+        console.error('Unable to connect to database:', error);
+        process.exit(1)
     });
