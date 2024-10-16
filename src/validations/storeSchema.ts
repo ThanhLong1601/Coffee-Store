@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-export const StoreDTO = z.object({
-  name: z.string().min(1, "Store name is required"),
+export const storeSchema = z.object({
+  name: z.string().min(1,"Name cannot be empty"),
   location: z.object({
     latitude: z.number(),
     longitude: z.number(),

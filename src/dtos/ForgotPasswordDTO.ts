@@ -1,7 +1,5 @@
-import { IsNotEmpty, IsEmail} from 'class-validator';
+import { z } from "zod";
 
-export class ForgotPasswordDTO {
-  @IsNotEmpty({ message: 'Email không được để trống' })
-  @IsEmail({}, { message: 'Email phải có định dạng hợp lệ' })
-  email!: string;
-}
+export const ForgotPasswordDTO = z.object({
+  email: z.string().min(1,"Email cannot be empty").email("Invalid email format"),
+});

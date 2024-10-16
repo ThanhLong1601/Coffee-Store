@@ -40,7 +40,7 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 - Version: ${app.get('version')}
 - Environment: ${app.get('env')} 
 - Host: ${app.get('host')}/api
-- APIs Docs: ${app.get('host')}/swagger
+- APIs Docs: ${app.get('host')}/swaggers
 - Database (MySQL): ${app.get('db_name')}
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
             `);

@@ -1,20 +1,8 @@
-import { 
-  IsNotEmpty, 
-  Length, 
-  Matches, 
-  IsString, 
-  Equals 
-} from 'class-validator';
+import { z } from "zod";
 
-export class ResetPasswordDTO {
-  @IsNotEmpty({ message: 'Mật khẩu mới không được để trống' })
-  @IsString({ message: 'Mật khẩu mới phải là chuỗi ký tự' })
-  @Length(4, 10, { message: 'Password phải có độ dài từ 4 đến 10 ký tự' })
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/, { 
-    message: 'Password phải chứa ít nhất một chữ thường, một chữ hoa và một số' 
-  })
-  newPassword!: string;
-
-  @IsNotEmpty({ message: 'Xác nhận mật khẩu không được để trống' })
-  confirmPassword!: string;
-}
+export const ResetPasswordDTO = z.object({
+  newPassword: z.string().min(1,"Password cannot be empty").min(6, "Password must be at least 6 characters")
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/, "Password must contain at least one uppercase letter, one lowercase letter, and one number"),
+  
+  confirmPassword: z.string().min(6, "Confirm password must be at least 6 characters")
+});

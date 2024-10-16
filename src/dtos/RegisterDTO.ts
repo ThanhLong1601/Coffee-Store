@@ -1,33 +1,10 @@
-import { 
-  IsNotEmpty, 
-  IsEmail, 
-  Length, 
-  Matches, 
-  MaxLength, 
-  IsString 
-} from 'class-validator';
+import { z } from "zod";
 
-export class RegisterDTO {
+export const RegisterDTO = z.object({
+  name: z.string().min(1,"Name cannot be empty").min(2, "Name must be at least 2 characters").trim(),
+  phone: z.string().min(1,"Phone cannot be empty").regex(/^\+?\d{10,15}$/, "Phone number must be between 10 to 15 characters and can start with '+'"),
+  email: z.string().min(1,"Email cannot be empty").email("Invalid email format"),
+  password: z.string().min(1,"Password cannot be empty").min(6, "Password must be at least 6 characters")
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/, "Password must contain at least one uppercase letter, one lowercase letter, and one number"),
   
-  @IsNotEmpty({ message: 'Name không được để trống' })
-  @IsString({ message: 'Name phải là chuỗi ký tự' })
-  @MaxLength(50, { message: 'Name không được vượt quá 50 ký tự' })
-  @Matches(/^[A-Za-z\s]+$/, { message: 'Name không được chứa số' })
-  name!: string;
-
-  @IsNotEmpty({ message: 'Phone không được để trống' })
-  @Matches(/^\+?\d{10,15}$/, { message: 'Phone phải bắt đầu bằng dấu + (nếu có) và có từ 10 đến 15 số' })
-  phone!: string;
-
-  @IsNotEmpty({ message: 'Email không được để trống' })
-  @IsEmail({}, { message: 'Email phải có định dạng hợp lệ' })
-  email!: string;
-
-  @IsNotEmpty({ message: 'Password không được để trống' })
-  @Length(4, 10, { message: 'Password phải có độ dài từ 4 đến 10 ký tự' })
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/, { 
-    message: 'Password phải chứa ít nhất một chữ thường, một chữ hoa và một số' 
-  })
-  password!: string;
-
-}
+});

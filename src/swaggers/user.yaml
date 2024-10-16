@@ -96,7 +96,7 @@ paths:
             schema:
               type: object
               properties:
-                otp:
+                otp_code:
                   type: string
       responses:
         "200":
