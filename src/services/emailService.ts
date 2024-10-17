@@ -12,8 +12,8 @@ export const sendOtpEmail = async (to: string, otp: string) => {
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to,
-        subject: 'Mã OTP Đặt Lại Mật Khẩu',
-        text: `Mã OTP của bạn là: ${otp}. Mã này chỉ có hiệu lực trong 5 phút.`,
+        subject: 'Your OTP code to reset Password',
+        text: `Your OTP code is: ${otp}. This code is valid in 5 minutes.`,
     };
 
     await transporter.sendMail(mailOptions);

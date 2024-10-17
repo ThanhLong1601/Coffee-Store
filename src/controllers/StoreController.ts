@@ -9,7 +9,7 @@ export class StoreController {
           const stores = await storeRepository.find();
           res.status(200).json(stores);
       } catch (error) {
-          res.status(500).json({ message: 'Lỗi máy chủ' });
+          res.status(500).json({ message: 'Server error' });
       }
     }
 

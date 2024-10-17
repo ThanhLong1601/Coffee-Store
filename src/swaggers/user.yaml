@@ -32,9 +32,9 @@ paths:
         "201":
           description: User registered successfully
         "400":
-          description: Email đã được sử dụng
+          description: Email already exists.
         "500":
-          description: Lỗi máy chủ
+          description: Server error
 
   /users/login:
     post:
@@ -56,9 +56,9 @@ paths:
         "200":
           description: Login successful
         "401":
-          description: Email hoặc mật khẩu không chính xác
+          description: Email or password is incorrect
         "500":
-          description: Lỗi máy chủ
+          description: Server error
 
   /users/forgot-password:
     post:
@@ -76,11 +76,11 @@ paths:
                   type: string
       responses:
         "200":
-          description: OTP đã được gửi về email
+          description: OTP code has been sent to your email
         "404":
-          description: Không tìm thấy người dùng với email này
+          description: No user found with this email
         "500":
-          description: Lỗi máy chủ
+          description: Server error
 
   /users/verify-otp:
     post:
@@ -100,13 +100,13 @@ paths:
                   type: string
       responses:
         "200":
-          description: OTP đã được xác thực thành công
+          description: OTP has been successfully authenticated.
         "400":
-          description: OTP không hợp lệ hoặc đã hết hạn
+          description: OTP is invalid or has already been used
         "401":
-          description: Thiếu hoặc không hợp lệ token xác thực
+          description: OTP is incorrect. Try again.
         "500":
-          description: Lỗi máy chủ
+          description: Server error
 
   /users/reset-password:
     post:
@@ -128,12 +128,12 @@ paths:
                   type: string
       responses:
         "200":
-          description: Mật khẩu đã được cập nhật
+          description: Password updated successfully
         "400":
-          description: Mật khẩu không khớp
+          description: Confirm password must be same as new password
         "401":
-          description: Thiếu hoặc không hợp lệ token xác thực
+          description: Missing or invalid token authenticated.
         "403":
-          description: Token không hợp lệ hoặc đã hết hạn
+          description: Token invalid or expired
         "500":
-          description: Lỗi máy chủ
+          description: Server error

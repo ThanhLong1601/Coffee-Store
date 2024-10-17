@@ -20,7 +20,7 @@ export const authenticateJWT = async (req: AuthRequest, res: Response, next: Nex
             const userId = decoded.userId;
 
             if (!userId) {
-                res.status(403).json({ message: 'Token không hợp lệ.' });
+                res.status(403).json({ message: 'Token invalid.' });
                 return;
             }
 
@@ -28,7 +28,7 @@ export const authenticateJWT = async (req: AuthRequest, res: Response, next: Nex
             next();
         } catch (err) {
             console.error(err);
-            res.status(403).json({ message: 'Token không hợp lệ hoặc đã hết hạn.' });
+            res.status(403).json({ message: 'Token invalid or expired.' });
             return; 
         }
     } else {
