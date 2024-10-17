@@ -7,7 +7,10 @@ export function validationMiddleware<T>(schema: ZodSchema<T>): (req: Request, re
 
     if (!result.success) {
       const errors = result.error.errors.map(error => error.message);
-      res.status(400).json({ errors });
+      res.status(400).json({
+        status: 'Error',
+        message: errors 
+      });
     } else {
       req.body = result.data;
       next();

@@ -7,4 +7,6 @@ const storeRouter = Router();
 
 storeRouter.get('',authenticateJWT, StoreController.getAllStores);
 
+storeRouter.get('/:id', authenticateJWT, StoreController.getStoreById);
+
 export default storeRouter;

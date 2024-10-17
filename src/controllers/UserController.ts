@@ -15,101 +15,150 @@ import { AuthRequest } from '../middlewares/authMiddleware';
 export class UserController {
   
   static async register(req: Request, res: Response): Promise<void> {
-      const userRepository = AppDataSource.getRepository(User);
-      const parsedData = RegisterDTO.safeParse(req.body);
-      if(!parsedData.success){
-        res.status(400).json({error: parsedData.error.errors});
+    const userRepository = AppDataSource.getRepository(User);
+    const parsedData = RegisterDTO.safeParse(req.body);
+    if(!parsedData.success){
+      res.status(400).json({
+        status: {error: parsedData.error.errors},
+        message: 'Error',
+        data: null
+      });
+      return;
+    }
+
+    const { name, phone, email, password } = parsedData.data;
+
+    try {
+      const existingUserByEmail = await userRepository.findOne({ where: { email } });
+      if (existingUserByEmail) {
+        res.status(400).json({ 
+          status: 'Fail',
+          message: 'Email already exists.',
+          data: null
+        });
         return;
       }
 
-      const { name, phone, email, password } = parsedData.data;
-
-      try {
-        const existingUserByEmail = await userRepository.findOne({ where: { email } });
-        if (existingUserByEmail) {
-            res.status(400).json({ message: 'Email already exists.' });
-            return;
-        }
-
-        const existingUserByPhone = await userRepository.findOne({ where: { phone } });
-        if (existingUserByPhone) {
-            res.status(400).json({ message: 'Phone already exists.' });
-            return;
-        }
-
-          const hashedPassword = await bcrypt.hash(password, 10);
-          const user = userRepository.create({
-              name,
-              phone,
-              email,
-              password: hashedPassword,
-          });
-
-          await userRepository.save(user);
-
-          const token = jwt.sign(
-            { userId: user.id, email: user.email },
-            process.env.JWT_SECRET!,
-            { expiresIn: '1h' }
-        );
-
-          res.status(201).json({ message: 'Registration successful!', token });
-      } catch (error) {
-          console.error(error);
-          res.status(500).json({ message: 'Server error.' });
+      const existingUserByPhone = await userRepository.findOne({ where: { phone } });
+      if (existingUserByPhone) {
+        res.status(400).json({ 
+          status: 'Fail',
+          message: 'Phone already exists.',
+          data: null
+        });
+        return;
       }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const user = userRepository.create({
+        name,
+        phone,
+        email,
+        password: hashedPassword,
+      });
+
+      await userRepository.save(user);
+
+      const token = jwt.sign(
+        { userId: user.id, email: user.email },
+        process.env.JWT_SECRET!,
+        { expiresIn: '1h' }
+      );
+
+      res.status(201).json({ 
+        status: 'success',
+        message: 'Registration successful!', 
+        token: token
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ 
+        status: 'Error',
+        message: 'Server error.',
+        data: null
+      });
+    }
   }
 
   static async login(req: Request, res: Response): Promise<void> {
-      const userRepository = AppDataSource.getRepository(User);
-      const parsedData = LoginDTO.safeParse(req.body);
-      if(!parsedData.success){
-        res.status(400).json({error: parsedData.error.errors});
+    const userRepository = AppDataSource.getRepository(User);
+    const parsedData = LoginDTO.safeParse(req.body);
+    if(!parsedData.success){
+      res.status(400).json({
+        status: {error: parsedData.error.errors},
+        message: 'Error',
+        data: null
+      });
+      return;
+    }
+    const { email, password } = parsedData.data;
+
+    try {
+      const user = await userRepository.findOne({ where: { email } });
+
+      if (!user) {
+        res.status(403).json({
+          status: 'Fail',
+          message: 'Email or password is incorrect.',
+          data: null
+        });
+        return; 
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        res.status(403).json({
+          status: 'Fail',
+          message: 'Email or password is incorrect.',
+          data: null
+        });
         return;
       }
-      const { email, password } = parsedData.data;
 
-      try {
-          const user = await userRepository.findOne({ where: { email } });
+      const token = jwt.sign(
+        { userId: user.id, email: user.email },
+        process.env.JWT_SECRET!,
+        { expiresIn: '1h' } // Phần này nên làm thế nào mới an toàn ???
+      );
 
-          if (!user) {
-              res.status(401).json({ message: 'Email or password is incorrect.' });
-              return; 
-          }
-
-          const isPasswordValid = await bcrypt.compare(password, user.password);
-          if (!isPasswordValid) {
-              res.status(401).json({ message: 'Email or password is incorrect.' });
-              return;
-          }
-
-          const token = jwt.sign(
-              { userId: user.id, email: user.email },
-              process.env.JWT_SECRET!,
-              { expiresIn: '1h' } // Phần này nên làm thế nào mới an toàn ???
-          );
-
-          res.status(200).json({ message: 'Login successful!', token, user: user.name });
-      } catch (error) {
-          console.error(error);
-          res.status(500).json({ message: 'Server error.' });
-      }
+      res.status(200).json({ 
+        status: 'success',
+        message: 'Login successful!', 
+        user: user.name ,
+        token: token
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ 
+        status: 'Error',
+        message: 'Server error.',
+        data: null
+      });
+    }
   }
 
   static async forgotPassword(req: Request, res: Response): Promise<void> {
     const userRepository = AppDataSource.getRepository(User);
     const otpRepository = AppDataSource.getRepository(Otp);
     const parsedData = ForgotPasswordDTO.safeParse(req.body);
-      if(!parsedData.success){
-        res.status(400).json({error: parsedData.error.errors});
-        return;
-      }
+    if(!parsedData.success){
+      res.status(400).json({
+        status: {error: parsedData.error.errors},
+        message: 'Error',
+        data: null
+      });
+      return;
+    }
     const { email } = parsedData.data;
 
     try {
       const user = await userRepository.findOne({ where: { email: email } });
       if (!user) {
-        res.status(404).json({ message: 'No user found with this email.' });
+        res.status(404).json({ 
+          status: 'Fail',
+          message: 'No user found with this email.',
+          data: null 
+        });
         return;
       }
 
@@ -133,27 +182,43 @@ export class UserController {
         {expiresIn: '5m'}
       );
 
-      res.status(200).json({ message: 'OTP code has been sent to your email.', resetToken });
+      res.status(200).json({
+        status: 'success', 
+        message: 'OTP code has been sent to your email.', 
+        tokenReset: resetToken });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error.' });
+        console.error(error);
+        res.status(500).json({ 
+          status: 'Error',
+          message: 'Server error.',
+          data: null
+        });
     }
   }
 
   static async verifyOtp(req: AuthRequest, res: Response): Promise<void> {
     const otpRepository = AppDataSource.getRepository(Otp);
     const parsedData = VerifyOtpDTO.safeParse(req.body);
-      if(!parsedData.success){
-        res.status(400).json({error: parsedData.error.errors});
-        return;
-      }
+    if(!parsedData.success){
+      res.status(400).json({
+        status: {error: parsedData.error.errors},
+        message: 'Error',
+        data: null
+      });
+      return;
+    }
+
     const { otp_code } = parsedData.data;
     const userId = req.user?.id;
 
     if (!userId) {
-      res.status(401).json({ message: 'No user found for authentication.' });
+      res.status(401).json({ 
+        status: 'Fail',
+        message: 'No user found for authentication.',
+        data: null 
+      });
       return;
-  }
+    }
 
     try {
       const otpRecord = await otpRepository.findOne({
@@ -166,13 +231,21 @@ export class UserController {
       });
 
       if (!otpRecord) {
-        res.status(400).json({ message: 'OTP is invalid or has already been used.' });
+        res.status(400).json({ 
+          status: 'Fail',
+          message: 'OTP is invalid or has already been used.',
+          data: null 
+        });
         return;
       }
 
       const currentTime = new Date();
       if (currentTime > otpRecord.expires_at) {
-        res.status(400).json({ message: 'OTP has expired.' });
+        res.status(400).json({ 
+          status: 'Fail',
+          message: 'OTP has expired.',
+          data: null
+        });
         return;
       }
 
@@ -181,11 +254,18 @@ export class UserController {
         await otpRepository.save(otpRecord);
 
         if (otpRecord.attempts >= 3) {
-
           await otpRepository.delete(otpRecord.id);
-          res.status(400).json({ message: 'You have entered the wrong OTP more than 3 times. The OTP code has been canceled.' });
+          res.status(400).json({ 
+            status: 'Fail',
+            message: 'You have entered the wrong OTP more than 3 times. The OTP code has been canceled.',
+            data: null 
+          });
         } else {
-          res.status(400).json({ message: 'OTP is incorrect. Try again.' });
+          res.status(400).json({ 
+            status: 'Fail',
+            message: 'OTP is incorrect. Try again.',
+            data: null 
+          });
         }
         return;
       }
@@ -199,53 +279,82 @@ export class UserController {
         {expiresIn: '5m'}
       );
 
-      res.status(200).json({ message: 'OTP has been successfully authenticated.', resetToken });
+      res.status(200).json({
+        status: 'success',
+        message: 'OTP has been successfully authenticated.', 
+        tokenReset: resetToken 
+      });
     } catch (error) {
       console.error(error);
-      res.status(500).json({message: 'Server error.'});
+      res.status(500).json({ 
+        status: 'Error',
+        message: 'Server error.',
+        data: null
+      });
     }
   }
 
   static async resetPassword(req: AuthRequest, res: Response): Promise<void> {
     const userRepository = AppDataSource.getRepository(User);
     const parsedData = ResetPasswordDTO.safeParse(req.body);
-      if(!parsedData.success){
-        res.status(400).json({error: parsedData.error.errors});
-        return;
-      }
+    if(!parsedData.success){
+      res.status(400).json({
+        status: {error: parsedData.error.errors},
+        message: 'Error',
+        data: null
+      });
+      return;
+    }
     const { newPassword, confirmPassword } = parsedData.data;
 
     if (!req.user || !req.user.id) {
-      res.status(400).json({ message: 'No user information to reset password. Please verify OTP first.' });
+      res.status(400).json({ 
+        status: 'Fail',
+        message: 'No user information to reset password. Please verify OTP first.',
+        data: null
+      });
       return;
     }
 
     try {
       const user = await userRepository.findOne({ where: { id: req.user.id } });
       if (!user) {
-        res.status(404).json({ message: 'No user found with this email.' });
+        res.status(404).json({ 
+          status: 'Fail',
+          message: 'No user found with this email.',
+          data: null
+        });
         return;
       }
 
-      
       if (newPassword.trim() !== confirmPassword.trim()) {
         res.status(400).json({ 
-            errors: [{ message: 'Confirm password must be same as new password.' }] 
+            errors: [{ 
+              status: 'Fail',
+              message: 'Confirm password must be same as new password.',
+              data: null 
+            }] 
         });
         return;
-    }
+      }
       
       const hashedPassword = await bcrypt.hash(newPassword, 10);
       user.password = hashedPassword;
       
       await userRepository.save(user);
       
-      res.status(200).json({ message: 'Password updated successfully.' });
+      res.status(200).json({
+        status: 'success',
+        message: 'Password updated successfully.'
+      });
       
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Server error.' });
+      res.status(500).json({ 
+        status: 'Error',
+        message: 'Server error.',
+        data: null
+      });
     }
   }
-
 }

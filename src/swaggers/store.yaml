@@ -39,3 +39,42 @@ paths:
                       description: The contact information for the store
         '500':
           description: Internal server error
+          
+  /stores/{id}:
+    get:
+      summary: Get store by ID
+      tags:
+        - Stores
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The unique identifier for the store
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Store details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The unique identifier for the store
+                  name:
+                    type: string
+                    description: The name of the store
+                  location:
+                    type: string
+                    description: The location of the store
+                  contact:
+                    type: string
+                    description: The contact information for the store
+        '404':
+          description: Store not found
+        '500':
+          description: Internal server error

@@ -20,7 +20,10 @@ export const authenticateJWT = async (req: AuthRequest, res: Response, next: Nex
             const userId = decoded.userId;
 
             if (!userId) {
-                res.status(403).json({ message: 'Token invalid.' });
+                res.status(403).json({
+                    status: 'Fail',
+                    message: 'Token invalid.',
+                });
                 return;
             }
 
@@ -28,11 +31,17 @@ export const authenticateJWT = async (req: AuthRequest, res: Response, next: Nex
             next();
         } catch (err) {
             console.error(err);
-            res.status(403).json({ message: 'Token invalid or expired.' });
+            res.status(403).json({ 
+                status: 'Fail',
+                message: 'Token invalid or expired.' 
+            });
             return; 
         }
     } else {
-        res.sendStatus(401);
+        res.status(401).json({
+            status: 'Error',
+            message: 'Unauthorized'
+        });
         return;
     }
 };
