@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { Order } from "./OrderEntity";
+import { Product } from "./ProductEntity";
 
 type Location = {
   latitude: number;
@@ -19,4 +20,6 @@ export class Store {
   @OneToMany(() => Order, order => order.store)
   orders: Order[];
 
+  @OneToMany(() => Product, product => product.store)
+  products: Product[];
 }
