@@ -42,7 +42,4 @@ export class OrderItem {
   @Column({type: 'time', nullable: true})
   prepare_time: string | null;
 
-  @Column({type: 'int'})
-  price: number;
-
 }
