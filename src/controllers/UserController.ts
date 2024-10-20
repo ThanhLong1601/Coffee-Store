@@ -1,22 +1,23 @@
 import { Request, Response } from 'express';
 import AppDataSource from '../data-source';
 import { User } from '../entities/UserEntity';
-import { RegisterDTO } from '../dtos/RegisterDTO';
-import { LoginDTO } from '../dtos/LoginDTO';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Otp } from '../entities/OtpEntity';
-import { ForgotPasswordDTO } from '../dtos/ForgotPasswordDTO';
 import { sendOtpEmail } from '../services/emailService';
-import { ResetPasswordDTO } from '../dtos/ResetPasswordDTO';
-import { VerifyOtpDTO } from '../dtos/VerifyOtpDTO';
 import { AuthRequest } from '../middlewares/authMiddleware';
+import { RegisterSchema } from '../validations/RegisterSchema';
+import { UserDTO } from '../dtos/UserDTO';
+import { LoginSchema } from '../validations/LoginSchema';
+import { ForgotPasswordSchema } from '../validations/ForgotPasswordSchema';
+import { VerifyOtpSchema } from '../validations/VerifyOtpSchema';
+import { ResetPasswordSchema } from '../validations/ResetPasswordSchema';
 
 export class UserController {
   
   static async register(req: Request, res: Response): Promise<void> {
     const userRepository = AppDataSource.getRepository(User);
-    const parsedData = RegisterDTO.safeParse(req.body);
+    const parsedData = RegisterSchema.safeParse(req.body);
     if(!parsedData.success){
       res.status(400).json({
         status: {error: parsedData.error.errors},
@@ -59,6 +60,12 @@ export class UserController {
 
       await userRepository.save(user);
 
+      const userResponse = UserDTO.parse({
+        name: user.name,
+        phone: user.phone,
+        email: user.email,
+      });
+
       const token = jwt.sign(
         { userId: user.id, email: user.email },
         process.env.JWT_SECRET!,
@@ -67,7 +74,8 @@ export class UserController {
 
       res.status(201).json({ 
         status: 'success',
-        message: 'Registration successful!', 
+        message: 'Registration successful!',
+        user: userResponse,
         token: token
       });
     } catch (error) {
@@ -82,7 +90,7 @@ export class UserController {
 
   static async login(req: Request, res: Response): Promise<void> {
     const userRepository = AppDataSource.getRepository(User);
-    const parsedData = LoginDTO.safeParse(req.body);
+    const parsedData = LoginSchema.safeParse(req.body);
     if(!parsedData.success){
       res.status(400).json({
         status: {error: parsedData.error.errors},
@@ -115,6 +123,12 @@ export class UserController {
         return;
       }
 
+      const userResponse = UserDTO.parse({
+        name: user.name,
+        phone: user.phone,
+        email: user.email,
+      });
+
       const token = jwt.sign(
         { userId: user.id, email: user.email },
         process.env.JWT_SECRET!,
@@ -124,7 +138,7 @@ export class UserController {
       res.status(200).json({ 
         status: 'success',
         message: 'Login successful!', 
-        user: user.name ,
+        user: userResponse ,
         token: token
       });
     } catch (error) {
@@ -140,7 +154,7 @@ export class UserController {
   static async forgotPassword(req: Request, res: Response): Promise<void> {
     const userRepository = AppDataSource.getRepository(User);
     const otpRepository = AppDataSource.getRepository(Otp);
-    const parsedData = ForgotPasswordDTO.safeParse(req.body);
+    const parsedData = ForgotPasswordSchema.safeParse(req.body);
     if(!parsedData.success){
       res.status(400).json({
         status: {error: parsedData.error.errors},
@@ -198,7 +212,7 @@ export class UserController {
 
   static async verifyOtp(req: AuthRequest, res: Response): Promise<void> {
     const otpRepository = AppDataSource.getRepository(Otp);
-    const parsedData = VerifyOtpDTO.safeParse(req.body);
+    const parsedData = VerifyOtpSchema.safeParse(req.body);
     if(!parsedData.success){
       res.status(400).json({
         status: {error: parsedData.error.errors},
@@ -296,7 +310,7 @@ export class UserController {
 
   static async resetPassword(req: AuthRequest, res: Response): Promise<void> {
     const userRepository = AppDataSource.getRepository(User);
-    const parsedData = ResetPasswordDTO.safeParse(req.body);
+    const parsedData = ResetPasswordSchema.safeParse(req.body);
     if(!parsedData.success){
       res.status(400).json({
         status: {error: parsedData.error.errors},

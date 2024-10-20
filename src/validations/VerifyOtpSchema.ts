@@ -1,5 +1,5 @@
 import { z } from "zod";
 
-export const VerifyOtpDTO = z.object({
+export const VerifyOtpSchema = z.object({
   otp_code: z.string().min(1, "OTP code is required"),
 });
