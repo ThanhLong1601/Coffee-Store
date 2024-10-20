@@ -8,6 +8,7 @@ import { seedStores } from './seeds/storeSeed';
 import storeRouter from './routes/StoreRoutes';
 import { env } from 'process';
 import { seedProducts } from './seeds/productSeed';
+import productRouter from './routes/ProductRoutes';
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ setupSwagger(app);
 
 app.use('/api/users', userRouter);
 app.use('/api/stores', storeRouter); 
+app.use('/api/products', productRouter);
 
 AppDataSource.initialize()
     .then(async () => {
