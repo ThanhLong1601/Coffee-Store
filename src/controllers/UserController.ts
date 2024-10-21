@@ -60,11 +60,11 @@ export class UserController {
 
       await userRepository.save(user);
 
-      const userResponse = UserDTO.parse({
+      const userResponse: UserDTO = {
         name: user.name,
         phone: user.phone,
         email: user.email,
-      });
+      };
 
       const token = jwt.sign(
         { userId: user.id, email: user.email },
@@ -123,11 +123,11 @@ export class UserController {
         return;
       }
 
-      const userResponse = UserDTO.parse({
+      const userResponse: UserDTO = {
         name: user.name,
         phone: user.phone,
         email: user.email,
-      });
+      };
 
       const token = jwt.sign(
         { userId: user.id, email: user.email },

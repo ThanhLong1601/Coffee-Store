@@ -36,3 +36,41 @@ paths:
                       description: The name of the product
         '500':
           description: Internal server error
+
+  /products/{storeId}:
+    get:
+      summary: Get all products by store ID
+      tags:
+        - Products
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          description: The ID of the store to retrieve products for
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of products for the specified store
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: The unique identifier for the product
+                    image:
+                      type: string
+                      description: The url image of the product
+                    name:
+                      type: string
+                      description: The name of the product
+        '400':
+          description: Invalid store ID
+        '500':
+          description: Internal server error
