@@ -30,5 +30,6 @@ export class Order {
   created_at: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  updated_at: Date;
+  updated_at: Date; 
+  
 }

@@ -2,13 +2,13 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { Order } from "./OrderEntity";
 import { Product } from "./ProductEntity";
 
-enum OrderSize {
+export enum OrderSize {
   SMALL = 250,
   MEDIUM = 350,
   LARGE = 450,
 }
 
-enum OrderRistretto {
+export enum OrderRistretto {
   SMALL = 1,
   MEDIUM = 2,
 }

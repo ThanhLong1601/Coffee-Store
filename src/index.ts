@@ -9,6 +9,8 @@ import storeRouter from './routes/StoreRoutes';
 import { env } from 'process';
 import { seedProducts } from './seeds/productSeed';
 import productRouter from './routes/ProductRoutes';
+import orderItemRouter from './routes/OrderItemRoutes';
+import orderRouter from './routes/OrderRoutes';
 
 dotenv.config();
 
@@ -29,6 +31,9 @@ setupSwagger(app);
 app.use('/api/users', userRouter);
 app.use('/api/stores', storeRouter); 
 app.use('/api/products', productRouter);
+app.use('/api/order-items', orderItemRouter);
+app.use('/api/orders', orderRouter);
+
 
 AppDataSource.initialize()
     .then(async () => {
@@ -42,7 +47,7 @@ $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 - Version: ${app.get('version')}
 - Environment: ${app.get('env')} 
 - Host: ${app.get('host')}/api
-- APIs Docs: ${app.get('host')}/swaggers
+- APIs Docs: ${app.get('host')}/swagger
 - Database (MySQL): ${app.get('db_name')}
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
             `);
