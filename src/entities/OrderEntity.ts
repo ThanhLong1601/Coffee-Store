@@ -3,6 +3,16 @@ import { OrderItem } from "./OrderItemEntity";
 import { User } from "./UserEntity";
 import { Store } from "./StoreEntity";
 
+
+export enum OrderStatus {
+  INIT = 'Init',
+  PENDING = 'Pending',
+  SHIPPED = 'Shipped',
+  DELIVERED = 'Delivered',
+  CANCELLED = 'Cancelled',
+  COMPLETED = 'Completed'
+}
+
 @Entity('orders')
 export class Order {
   @PrimaryGeneratedColumn()
@@ -31,5 +41,8 @@ export class Order {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date; 
+
+  @Column({type: 'enum', enum: OrderStatus, default: OrderStatus.INIT})
+  status: OrderStatus;
   
 }

@@ -12,7 +12,7 @@ export class Otp {
   @CreateDateColumn({type: 'timestamp'})
   created_at: Date;
 
-  @Column({type: 'timestamp'})
+  @Column({type: 'datetime'})
   expires_at: Date;
 
   @Column({default: 0})
