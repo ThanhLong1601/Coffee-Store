@@ -3,10 +3,13 @@ import { Router } from 'express';
 import { authenticateJWT } from '../middlewares/authMiddleware';
 import { orderSchema } from '../validations/orderSchema';
 import { validationMiddleware } from '../middlewares/validationMiddleware';
+import { orderItemSchema } from '../validations/orderItemSchema';
 
 
 const orderRouter = Router();
 
 orderRouter.post('',authenticateJWT, validationMiddleware(orderSchema), OrderController.createOrder);
+
+orderRouter.post('/:orderId',authenticateJWT, validationMiddleware(orderItemSchema), OrderController.addOrderItemToOrder);
 
 export default orderRouter;
