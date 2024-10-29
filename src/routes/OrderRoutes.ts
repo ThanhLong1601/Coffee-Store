@@ -8,8 +8,8 @@ import { orderItemSchema } from '../validations/orderItemSchema';
 
 const orderRouter = Router();
 
-orderRouter.post('',authenticateJWT, validationMiddleware(orderSchema), OrderController.createOrder);
+orderRouter.post('/',authenticateJWT, validationMiddleware(orderItemSchema), OrderController.addOrderItemToOrder);
 
-orderRouter.post('/:orderId',authenticateJWT, validationMiddleware(orderItemSchema), OrderController.addOrderItemToOrder);
+orderRouter.put('/:orderId',authenticateJWT, validationMiddleware(orderSchema), OrderController.updateOrder);
 
 export default orderRouter;
