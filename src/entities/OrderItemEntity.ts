@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from "typeorm";
 import { Order } from "./OrderEntity";
 import { Product } from "./ProductEntity";
 
@@ -13,33 +19,41 @@ export enum OrderRistretto {
   MEDIUM = 2,
 }
 
-@Entity('order_items')
+@Entity("order_items")
 export class OrderItem {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Order, (order) => order.orderItems, {onDelete: 'CASCADE', nullable: false})
+  @ManyToOne(() => Order, (order) => order.orderItems, {
+    onDelete: "CASCADE",
+    nullable: false,
+  })
   order: Order;
 
-  @ManyToOne(() => Product, (product) => product.orderItems, {onDelete: 'CASCADE'})
+  @ManyToOne(() => Product, (product) => product.orderItems, {
+    onDelete: "CASCADE",
+  })
   product: Product;
 
-  @Column({default: 1})
+  @Column({ default: 1 })
   quantity: number;
-  
-  @Column({type: 'enum', enum:OrderRistretto, default: OrderRistretto.SMALL}) //Quantity shot(1 or 2) of coffee ristretto
-  ristretto: OrderRistretto;
 
-  @Column({default: false}) //Onsite or Takeaway
+  @Column({
+    type: "enum",
+    enum: OrderRistretto,
+    default: OrderRistretto.SMALL,
+  }) //Quantity shot(1 or 2) of coffee ristretto
+  ristretto: string;
+
+  @Column({ default: false }) //Onsite or Takeaway
   isOnsite: boolean;
 
-  @Column({type: 'enum', enum: OrderSize, default: OrderSize.MEDIUM})
-  size: OrderSize;
+  @Column({ type: "enum", enum: OrderSize, default: OrderSize.MEDIUM })
+  size: string;
 
-  @Column({default: false})
+  @Column({ default: false })
   time_prepare: boolean;
 
-  @Column({type: 'time', nullable: true})
+  @Column({ type: "time", nullable: true })
   prepare_time: string | null;
-
 }
